@@ -1,14 +1,14 @@
-import { TUser } from './user.interface';
-import { User } from './user.model';
+import { TUser } from '../user/user.interface';
+import { User } from '../user/user.model';
 
 const createUserIntoDB = async (payload: TUser) => {
     // Ensure the role is set to 'user' by default
-    payload.role = 'user'; // Overwrite or set the role field
+    payload.role = 'user';
 
     const result = await User.create(payload);
     return result;
 };
 
-export const UserServices = {
+export const AuthServices = {
     createUserIntoDB
 };

@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 // applications routs
-app.use('/api/v1', router);
+app.use('/api', router);
 const getAController = (req: Request, res: Response) => {
     const a = 55;
     res.send({ a });
