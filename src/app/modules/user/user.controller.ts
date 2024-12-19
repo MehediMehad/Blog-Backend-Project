@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express';
-import { UserServices } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
+import { UserServices } from './user.service';
 
 const createUser: RequestHandler = catchAsync(async (req, res) => {
     const result = await UserServices.createUserIntoDB(req.body);

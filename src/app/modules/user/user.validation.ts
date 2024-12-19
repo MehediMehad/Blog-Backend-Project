@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const createCourseValidationSchema = z.object({
+const createUserValidationSchema = z.object({
     body: z.object({
         name: z
             .string({ required_error: 'Name is required.' })
@@ -23,5 +23,5 @@ const createCourseValidationSchema = z.object({
 });
 
 export const UserValidation = {
-    createCourseValidationSchema
+    createUserValidationSchema
 };
