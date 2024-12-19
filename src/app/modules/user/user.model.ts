@@ -16,7 +16,8 @@ const userSchema = new Schema<TUser>(
         },
         password: {
             type: String,
-            required: [true, 'Password id is required']
+            required: [true, 'Password id is required'],
+            select: false // Password will not be selected by default
         },
         role: {
             type: String,
@@ -39,12 +40,6 @@ userSchema.pre('save', async function (next) {
         user.password,
         Number(config.bcrypt_salt_rounds)
     );
-    next();
-});
-
-// set "" after saving password
-userSchema.post('save', async function (doc, next) {
-    doc.password = '';
     next();
 });
 
