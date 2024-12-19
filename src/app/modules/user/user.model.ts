@@ -20,9 +20,8 @@ const userSchema = new Schema<TUser, UserModel>(
         },
         password: {
             type: String,
-            required: [true, 'Password id is required']
-            // TODO: Hide Password
-            //  select: 0 // Password will not be selected by default
+            required: [true, 'Password id is required'],
+            select: 0 // Password will not be selected by default
         },
         role: {
             type: String,
@@ -54,7 +53,7 @@ userSchema.pre('save', async function (next) {
 
 // Static method to check if a user exists by their email
 userSchema.statics.isUserExistsByEmail = async function (email: string) {
-    return await User.findOne({ email });
+    return await User.findOne({ email }).select('+password');
 };
 
 // Static method to check if a user is blocked

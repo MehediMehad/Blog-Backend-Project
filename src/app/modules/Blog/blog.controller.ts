@@ -21,7 +21,7 @@ const getAllBlogs = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Academic departments are retrieved successfully',
+        message: 'Blogs fetched successfully',
         data: result
     });
 });

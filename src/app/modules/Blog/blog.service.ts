@@ -10,7 +10,9 @@ const createBlogIntoDB = async (payload: TBlog) => {
 };
 
 const getAllBlogsFromDB = async () => {
-    const result = await Blog.find().populate('author');
+    const result = await Blog.find()
+        .select('_id title content author')
+        .populate({ path: 'author', select: '-__v' });
     return result;
 };
 
