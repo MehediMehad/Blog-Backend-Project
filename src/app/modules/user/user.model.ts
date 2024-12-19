@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { model, Schema } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import AppError from '../../errors/AppError';
+import { StatusCodes } from 'http-status-codes';
 
-const userSchema = new Schema<TUser>(
+// Defining the User schema
+const userSchema = new Schema<TUser, UserModel>(
     {
         name: {
             type: String,
@@ -16,8 +20,9 @@ const userSchema = new Schema<TUser>(
         },
         password: {
             type: String,
-            required: [true, 'Password id is required'],
-            select: false // Password will not be selected by default
+            required: [true, 'Password id is required']
+            // TODO: Hide Password
+            //  select: 0 // Password will not be selected by default
         },
         role: {
             type: String,
@@ -26,6 +31,10 @@ const userSchema = new Schema<TUser>(
                 message: '{VALUE} is not a valid user role.'
             },
             required: [true, 'role is required.']
+        },
+        isBlocked: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -33,8 +42,8 @@ const userSchema = new Schema<TUser>(
     }
 );
 
+// Middleware to hash the password before saving the user
 userSchema.pre('save', async function (next) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const user = this;
     user.password = await bcrypt.hash(
         user.password,
@@ -43,4 +52,27 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-export const User = model<TUser>('User', userSchema);
+// Static method to check if a user exists by their email
+userSchema.statics.isUserExistsByEmail = async function (email: string) {
+    return await User.findOne({ email });
+};
+
+// Static method to check if a user is blocked
+userSchema.statics.isUserBlocked = async function (isBlocked: boolean) {
+    if (isBlocked) {
+        throw new AppError(
+            StatusCodes.FORBIDDEN,
+            'This account is currently blocked.'
+        );
+    }
+    return isBlocked;
+};
+// Static method to compare a plain text password with a hashed password
+userSchema.statics.isPasswordMatched = async function (
+    plainTextPassword,
+    hashedPassword
+) {
+    return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+export const User = model<TUser, UserModel>('User', userSchema);
