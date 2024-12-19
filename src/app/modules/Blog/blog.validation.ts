@@ -11,11 +11,12 @@ const createBlogValidationSchema = z.object({
             .min(4, 'Content must be at least 4 characters long.'),
         author: z
             .string({ required_error: 'Author is required.' })
-            .min(4, 'Author must be at least 4 characters long.'),
+            .min(4, 'Author must be at least 4 characters long.')
+            .optional(), //TODO: Delete this line
         isPublished: z.boolean().default(true).optional()
     })
 });
 
-export const BlogValidation = {
+export const BlogValidations = {
     createBlogValidationSchema
 };

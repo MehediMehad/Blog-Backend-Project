@@ -13,7 +13,9 @@ const createUserIntoDB = async (payload: TUser) => {
     const user = await User.create(payload);
 
     // Query to return specific fields (_id, name, email) without password
-    const result = await User.findById(user._id).select('_id name email'); // .lean() returns the returned data as a JavaScript object
+    const result = await User.findById(user._id)
+        .select('_id name email')
+        .lean(); // .lean() returns the returned data as a JavaScript object
     return result;
 };
 const loginUser = async (payload: TLoginUser) => {
