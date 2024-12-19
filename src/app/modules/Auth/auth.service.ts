@@ -3,6 +3,8 @@ import AppError from '../../errors/AppError';
 import { TUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
+import jwt from 'jsonwebtoken';
+import config from '../../config';
 
 const createUserIntoDB = async (payload: TUser) => {
     // Ensure the role is set to 'user' by default
@@ -28,7 +30,21 @@ const loginUser = async (payload: TLoginUser) => {
         throw new AppError(StatusCodes.FORBIDDEN, 'Password do not matched!');
     }
 
-    return {};
+    // create token and send to the client
+    const jwtPayload = {
+        userId: user.email,
+        role: user.role
+    };
+
+    const accessToken = jwt.sign(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        {
+            expiresIn: '30d'
+        }
+    );
+
+    return { token: accessToken };
 };
 
 export const AuthServices = {
