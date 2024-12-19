@@ -15,6 +15,18 @@ const createBlog: RequestHandler = catchAsync(async (req, res) => {
     });
 });
 
+const getAllBlogs = catchAsync(async (req, res) => {
+    const result = await BlogServices.getAllBlogsFromDB();
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Academic departments are retrieved successfully',
+        data: result
+    });
+});
+
 export const BlogControllers = {
-    createBlog
+    createBlog,
+    getAllBlogs
 };
