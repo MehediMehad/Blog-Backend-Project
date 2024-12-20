@@ -8,6 +8,7 @@ import { User } from '../User/user.model';
 import { JwtPayload } from 'jsonwebtoken';
 import AppError from '../../errors/AppError';
 import mongoose from 'mongoose';
+import { blogSearchableFields } from './blog.constant';
 
 const createBlogIntoDB = async (currentUser: JwtPayload, payload: TBlog) => {
     const currentUserId = await User.findOne({
@@ -29,12 +30,53 @@ const createBlogIntoDB = async (currentUser: JwtPayload, payload: TBlog) => {
     return result;
 };
 
-const getAllBlogsFromDB = async () => {
-    const result = await Blog.find()
-        .select('_id title content author')
+const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
+    const queryObj = { ...query };
+
+    let searchTerm = '';
+    let sortBy = 'createdAt';
+    let sortOrder = 'asc';
+
+    // Handle search term
+    if (query?.search) {
+        searchTerm = query?.search as string;
+    }
+
+    // Handle filtering by author (convert 'filter' to 'author')
+    if (queryObj.filter) {
+        queryObj.author = queryObj.filter;
+        delete queryObj.filter;
+    }
+
+    // Handle sorting
+    if (query?.sortBy) {
+        sortBy = query.sortBy as string;
+    }
+    if (query?.sortOrder) {
+        sortOrder = (query.sortOrder as string) === 'desc' ? '-1' : '1';
+    }
+
+    // Create the base query
+    const searchQuery = Blog.find({
+        $or: blogSearchableFields.map(field => ({
+            [field]: { $regex: searchTerm, $options: 'i' }
+        }))
+    });
+
+    // Exclude unnecessary fields
+    const excludeFields = ['search', 'sortBy', 'sortOrder'];
+    excludeFields.forEach(el => delete queryObj[el]);
+
+    // Apply queryObj and sorting to the searchQuery
+    const result = await searchQuery
+        .find(queryObj)
+        .sort({ [sortBy]: sortOrder === '1' ? 1 : -1 })
+        .select('_id title content author createdAt')
         .populate({ path: 'author', select: '-__v' });
+
     return result;
 };
+
 const updateBlogIntoDB = async (
     currentUser: JwtPayload,
     id: string,

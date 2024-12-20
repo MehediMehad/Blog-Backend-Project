@@ -19,7 +19,7 @@ router.patch(
     validateRequest(BlogValidations.updateBlogValidationSchema),
     BlogControllers.updateBlog
 );
-router.get('/', auth(USER_ROLE.user), BlogControllers.getAllBlogs);
+router.get('/', BlogControllers.getAllBlogs);
 router.delete(
     '/:id',
     auth(USER_ROLE.user, USER_ROLE.admin),

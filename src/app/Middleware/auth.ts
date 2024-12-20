@@ -9,7 +9,7 @@ import { TUserRole } from '../modules/User/user.interface';
 const auth = (...requiredRoles: TUserRole[]) => {
     return catchAsync(
         async (req: Request, res: Response, next: NextFunction) => {
-            const token = req.headers.authorization;
+            const token = req.headers.authorization?.split(' ')[1];
             // if the token is send from the client
             if (!token) {
                 throw new AppError(
