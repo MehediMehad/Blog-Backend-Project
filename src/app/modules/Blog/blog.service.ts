@@ -7,6 +7,7 @@ import { Blog } from './blog.model';
 import { User } from '../User/user.model';
 import { JwtPayload } from 'jsonwebtoken';
 import AppError from '../../errors/AppError';
+import mongoose from 'mongoose';
 
 const createBlogIntoDB = async (currentUser: JwtPayload, payload: TBlog) => {
     const currentUserId = await User.findOne({
@@ -97,8 +98,52 @@ const updateBlogIntoDB = async (
     }
 };
 
+const deleteBlogFromDB = async (currentUser: JwtPayload, blogId: string) => {
+    const session = await mongoose.startSession();
+
+    try {
+        session.startTransaction();
+        // Find the user by email
+        const user = await User.findOne({
+            email: currentUser.userEmail
+        }).session(session);
+        if (!user) {
+            throw new AppError(StatusCodes.NOT_FOUND, 'User not found.');
+        }
+
+        // Find the blog by ID
+        const blog = await Blog.findById({ _id: blogId }).session(session);
+        if (!blog) {
+            throw new AppError(StatusCodes.NOT_FOUND, 'Blog not found.');
+        }
+
+        // Authorization check: Admins can delete any blog
+        if (
+            currentUser.role !== 'admin' &&
+            user._id.toString() !== blog.author.toString()
+        ) {
+            throw new AppError(
+                StatusCodes.UNAUTHORIZED,
+                'You are not authorized to delete this blog.'
+            );
+        }
+
+        // Delete the blog
+        await Blog.findByIdAndDelete(blogId).session(session);
+
+        // Commit the transaction
+        await session.commitTransaction();
+        await session.endSession();
+    } catch (err: any) {
+        // Rollback the transaction on error
+        await session.abortTransaction();
+        await session.endSession();
+        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, `${err.message}`);
+    }
+};
 export const BlogServices = {
     createBlogIntoDB,
     getAllBlogsFromDB,
-    updateBlogIntoDB
+    updateBlogIntoDB,
+    deleteBlogFromDB
 };
