@@ -16,7 +16,21 @@ const createBlogValidationSchema = z.object({
         isPublished: z.boolean().default(true).optional()
     })
 });
+const updateBlogValidationSchema = z.object({
+    body: z.object({
+        title: z
+            .string({ required_error: 'Title is required.' })
+            .trim()
+            .min(3, 'Title must be at least 3 characters long.')
+            .optional(),
+        content: z
+            .string({ required_error: 'Content is required.' })
+            .min(4, 'Content must be at least 4 characters long.')
+            .optional()
+    })
+});
 
 export const BlogValidations = {
-    createBlogValidationSchema
+    createBlogValidationSchema,
+    updateBlogValidationSchema
 };

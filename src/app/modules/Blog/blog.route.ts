@@ -13,6 +13,12 @@ router.post(
     validateRequest(BlogValidations.createBlogValidationSchema),
     BlogControllers.createBlog
 );
+router.patch(
+    '/:id',
+    auth(USER_ROLE.user),
+    validateRequest(BlogValidations.updateBlogValidationSchema),
+    BlogControllers.updateBlog
+);
 router.get('/', auth(USER_ROLE.user), BlogControllers.getAllBlogs);
 
 export const BlogRouter = router;

@@ -8,8 +8,8 @@ const BlogSchema = new Schema<TBlog>(
         author: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: [true, 'Author is required.'],
-            default: '6764949dd4aaaeaa09d86d18' // TODO: Delete This Line
+            required: [true, 'Author is required.']
+            // default: '6764949dd4aaaeaa09d86d18' // TODO: Delete This Line
         },
         isPublished: { type: Boolean, default: true }
     },
