@@ -28,9 +28,7 @@ const getAllBlogs = catchAsync(async (req, res) => {
 
 const updateBlog = catchAsync(async (req, res) => {
     const { id } = req.params;
-    console.log('pppppppppppp', req?.user);
-
-    const result = await BlogServices.updateBlogIntoDB(id, req.body);
+    const result = await BlogServices.updateBlogIntoDB(req.user, id, req.body);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
