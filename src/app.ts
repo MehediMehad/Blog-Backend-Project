@@ -3,6 +3,7 @@ import cors from 'cors';
 import router from './app/routes';
 import globalErrorHandle from './app/Middleware/globalErrorHandler';
 import notFound from './app/Middleware/notFound';
+import config from './app/config';
 const app: Application = express();
 // const port = 3000;
 
@@ -14,8 +15,7 @@ app.use(cors());
 app.use('/api', router);
 const test = async (req: Request, res: Response) => {
     Promise.reject();
-    const a = 55;
-    res.send({ a });
+    res.send(`The bicycle is moving at a speed of ${config.port} 🚴`);
 };
 
 app.get('/', test);

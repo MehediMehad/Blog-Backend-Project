@@ -1,4 +1,4 @@
-#### Live Deployment Link (Server)
+#### Live Deployment Link (vercel): https://blog-project-backend-ten.vercel.app/
 
 ## Project Overview: Blogging Platform Backend
 
