@@ -1,3 +1,5 @@
+#### Live Deployment Link (Server)
+
 ## Project Overview: Blogging Platform Backend
 
 Developed a robust backend system for a blogging platform with the following key features:
@@ -9,8 +11,6 @@ Developed a robust backend system for a blogging platform with the following key
 -   **Security & Scalability:** Followed best practices to secure sensitive data and designed the system to handle increasing user demands.
 
 This project showcases my expertise in backend development, secure authentication, and implementing scalable RESTful APIs.
-
-#### Live Deployment Link (Server)
 
 ---
 
