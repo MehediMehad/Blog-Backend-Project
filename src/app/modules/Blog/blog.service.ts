@@ -89,7 +89,10 @@ const updateBlogIntoDB = async (
             email: currentUser.userEmail
         }).session(session);
         if (!user) {
-            throw new AppError(StatusCodes.NOT_FOUND, 'User not found.');
+            throw new AppError(
+                StatusCodes.NOT_FOUND,
+                'You are not authorized to update this blog.'
+            );
         }
 
         // Find the blog
