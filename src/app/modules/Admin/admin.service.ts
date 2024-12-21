@@ -34,17 +34,17 @@ const blockUserFromDB = async (currentUser: JwtPayload, id: string) => {
         user.isBlocked = true;
 
         // Avoid triggering the pre-save hook for password hashing
-        const updatedUser = await User.updateOne(
-            { _id: id },
-            { isBlocked: true },
-            { session }
-        );
+        await User.updateOne({ _id: id }, { isBlocked: true }, { session });
 
         // Commit the transaction
         await session.commitTransaction();
         session.endSession();
 
-        return updatedUser;
+        return {
+            success: true,
+            message: 'User blocked successfully',
+            statusCode: StatusCodes.OK
+        };
     } catch (err: any) {
         // Rollback the transaction on error
         await session.abortTransaction();
@@ -85,7 +85,11 @@ const deleteBlogFromDB = async (currentUser: JwtPayload, blogId: string) => {
         await session.commitTransaction();
         session.endSession();
 
-        return { success: true, message: 'Blog deleted successfully' };
+        return {
+            success: true,
+            message: 'Blog deleted successfully',
+            statusCode: StatusCodes.OK
+        };
     } catch (err: any) {
         // Rollback the transaction on error
         await session.abortTransaction();

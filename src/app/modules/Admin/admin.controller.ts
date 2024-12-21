@@ -1,5 +1,3 @@
-import sendResponse from '../../utils/sendResponse';
-import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import { AdminServices } from './admin.service';
 
@@ -7,25 +5,13 @@ const blockUser = catchAsync(async (req, res) => {
     const { id } = req.params;
 
     const result = await AdminServices.blockUserFromDB(req.user, id);
-
-    sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        success: true,
-        message: 'User blocked successfully',
-        data: result
-    });
+    res.status(result.statusCode).json(result);
 });
 const deleteBlog = catchAsync(async (req, res) => {
     const { id } = req.params;
 
     const result = await AdminServices.deleteBlogFromDB(req.user, id);
-
-    sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        success: true,
-        message: 'Blog deleted successfully',
-        data: result
-    });
+    res.status(result.statusCode).json(result);
 });
 
 export const AdminControllers = {
