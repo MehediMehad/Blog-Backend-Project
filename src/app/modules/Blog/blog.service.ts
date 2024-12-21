@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import { TBlog } from './blog.interface';
 import { Blog } from './blog.model';

@@ -1,10 +1,9 @@
-import { RequestHandler } from 'express';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import { BlogServices } from './blog.service';
 
-const createBlog: RequestHandler = catchAsync(async (req, res) => {
+const createBlog = catchAsync(async (req, res) => {
     const result = await BlogServices.createBlogIntoDB(req.user, req.body);
 
     sendResponse(res, {
@@ -33,7 +32,7 @@ const updateBlog = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Blogs is updated successfully',
+        message: 'Blog updated successfully',
         data: result
     });
 });

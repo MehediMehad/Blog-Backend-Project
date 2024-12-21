@@ -1,10 +1,9 @@
-import { RequestHandler } from 'express';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import { AuthServices } from './auth.service';
 
-const registerUser: RequestHandler = catchAsync(async (req, res) => {
+const registerUser = catchAsync(async (req, res) => {
     const result = await AuthServices.registerUserIntoDB(req.body);
 
     sendResponse(res, {
