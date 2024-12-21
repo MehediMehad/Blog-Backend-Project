@@ -4,13 +4,13 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import { AuthServices } from './auth.service';
 
-const createUser: RequestHandler = catchAsync(async (req, res) => {
-    const result = await AuthServices.createUserIntoDB(req.body);
+const registerUser: RequestHandler = catchAsync(async (req, res) => {
+    const result = await AuthServices.registerUserIntoDB(req.body);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
-        message: 'Users is created successfully',
+        message: 'User registered successfully',
         data: result
     });
 });
@@ -20,14 +20,14 @@ const loginUser = catchAsync(async (req, res) => {
     // const { refreshToken, accessToken, needsPasswordChange } = result;
 
     sendResponse(res, {
-        statusCode: StatusCodes.OK,
         success: true,
-        message: 'User is logged in successfully!',
+        message: 'Login successful',
+        statusCode: StatusCodes.OK,
         data: result
     });
 });
 
 export const AuthControllers = {
-    createUser,
+    registerUser,
     loginUser
 };

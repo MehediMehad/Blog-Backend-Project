@@ -24,8 +24,8 @@ const createBlogIntoDB = async (currentUser: JwtPayload, payload: TBlog) => {
 
     const blog = await Blog.create(payload);
     const result = await Blog.findById(blog._id)
-        .select('_id title content author')
-        .populate('author') // TODO :
+        .select('_id title content author ')
+        .populate({ path: 'author', select: '_id name email' })
         .lean(); // .lean() returns the returned data as a JavaScript object
     return result;
 };
@@ -71,8 +71,8 @@ const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
     const result = await searchQuery
         .find(queryObj)
         .sort({ [sortBy]: sortOrder === '1' ? 1 : -1 })
-        .select('_id title content author createdAt')
-        .populate({ path: 'author', select: '-__v' });
+        .select('_id title content author ')
+        .populate({ path: 'author', select: '-__v -role -isBlocked' });
 
     return result;
 };
@@ -115,7 +115,7 @@ const updateBlogIntoDB = async (
             { new: true, session } // Include session for transaction
         )
             .select('_id title content author')
-            .populate({ path: 'author', select: '-__v' });
+            .populate({ path: 'author', select: '_id name email' });
 
         if (!updatedBlog) {
             throw new AppError(
@@ -135,7 +135,7 @@ const updateBlogIntoDB = async (
         session.endSession();
         throw new AppError(
             StatusCodes.INTERNAL_SERVER_ERROR,
-            'Transaction failed. Please try again later.'
+            err.message || 'Transaction failed. Please try again later.'
         );
     }
 };
@@ -150,7 +150,10 @@ const deleteBlogFromDB = async (currentUser: JwtPayload, blogId: string) => {
             email: currentUser.userEmail
         }).session(session);
         if (!user) {
-            throw new AppError(StatusCodes.NOT_FOUND, 'User not found.');
+            throw new AppError(
+                StatusCodes.NOT_FOUND,
+                'You are not authorize user.'
+            );
         }
 
         // Find the blog by ID

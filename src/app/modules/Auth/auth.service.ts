@@ -6,7 +6,7 @@ import { TLoginUser } from './auth.interface';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 
-const createUserIntoDB = async (payload: TUser) => {
+const registerUserIntoDB = async (payload: TUser) => {
     // Ensure the role is set to 'user' by default
     payload.role = 'user';
 
@@ -50,6 +50,6 @@ const loginUser = async (payload: TLoginUser) => {
 };
 
 export const AuthServices = {
-    createUserIntoDB,
+    registerUserIntoDB,
     loginUser
 };
